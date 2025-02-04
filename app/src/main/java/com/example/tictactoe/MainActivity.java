@@ -1,6 +1,5 @@
 package com.example.tictactoe;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -20,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
     // 0 - X
     // 1 - O
     int activePlayer = 0;
+    int updateCount = 0;
     boolean isGameActive = true;
     // Block Status
     // 0 - X
@@ -33,18 +33,32 @@ public class MainActivity extends AppCompatActivity {
     public void playerClick(View view){
         ImageView img = (ImageView) view;
         TextView status = findViewById(R.id.status);
+
         int activeBlock = Integer.parseInt(img.getTag().toString());
         if(isGameActive && gameState[activeBlock] == 2){
             if(activePlayer == 0){
                 gameState[activeBlock] = 0;
                 img.setImageResource(R.drawable.tictactoecross1);
-                activePlayer = 1;
-                status.setText("Player 2's Turn");
+                updateCount++;
+                if(updateCount < 9){
+                    activePlayer = 1;
+                    status.setText("Player 2's Turn");
+                }else{
+                    status.setText("Draw");
+                    isGameActive = false;
+                }
+
             }else{
                 gameState[activeBlock] = 1;
+                updateCount++;
                 img.setImageResource(R.drawable.tictactoecircle1);
-                activePlayer = 0;
-                status.setText("Player 1's Turn");
+                if(updateCount < 9){
+                    activePlayer = 0;
+                    status.setText("Player 1's Turn");
+                }else{
+                    status.setText("Draw");
+                    isGameActive = false;
+                }
             }
         }
         for(int[] winPosition: winConditions){
@@ -59,8 +73,8 @@ public class MainActivity extends AppCompatActivity {
                     isGameActive = false;
                 }
             }
-
         }
+
     }
 
     public void gameReset(View view){
@@ -80,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
         isGameActive = true;
         Arrays.fill(gameState, 2);
         status.setText("Start the Game");
+        updateCount = 0;
 
     }
 
@@ -93,6 +108,7 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
     }
 
 
